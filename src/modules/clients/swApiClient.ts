@@ -20,7 +20,7 @@ export function parseUrl(url: string) {
   };
 }
 
-export function generateNodeCacheKey(entityType: string, id: string) {
+export function generateNodeCacheKey(entityType: string, id: string): string {
   return `${entityType.toString()}/${id}`;
 }
 
@@ -29,10 +29,10 @@ export class SWApiClient {
   queryCache: NodeCache;
   nodeCache: NodeCache;
 
-  constructor() {
+  constructor(queryCache, nodeCache) {
     this.root_url = `https://swapi.dev/api`;
-    this.queryCache = new NodeCache({ stdTTL: 3600 });
-    this.nodeCache = new NodeCache({ stdTTL: 3600 });
+    this.queryCache = queryCache;
+    this.nodeCache = nodeCache;
   }
 
   async fetchData(path: string) {
@@ -53,7 +53,7 @@ export class SWApiClient {
     const url = this.constructUrlForFetch({ entityType, id });
     const apiData = await this.fetchData(url);
     const sanitizedApiData = convertToNode(apiData);
-    this.nodeCache.set<SwNode>(generateNodeCacheKey(apiData, id), sanitizedApiData);
+    this.nodeCache.set<SwNode>(generateNodeCacheKey(entityType, id), sanitizedApiData);
     return sanitizedApiData;
   }
 
@@ -110,7 +110,6 @@ export class SWApiClient {
     if (id) url.pathname += `/${id}`;
     if (page) url.searchParams.append('page', page.toString());
     if (search) url.searchParams.append('search', search);
-    console.log(url.href)
     return url.href;
   }
 
