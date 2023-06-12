@@ -1,10 +1,14 @@
 import http from 'http';
 import * as readline from 'readline';
+import { getNamesRelatedToSearch } from './swapi';
+import { SWApiClient } from './modules/clients/swApiClient';
+import { preProcessSwData } from './modules/seeder/seeder';
 
 const hostname = '127.0.0.1';
 const port = 3000;
+const apiClient = new SWApiClient();
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/plain');
   res.end('Hello World');
@@ -18,17 +22,20 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
-rl.setPrompt('OHAI> ');
+
+rl.on;
+rl.setPrompt('Input> ');
 rl.prompt();
 
-rl.on('line', function (line) {
-  switch (line.trim()) {
-    case 'hello':
-      console.log('world!');
-      break;
-    default:
-      console.log('Say what? I might have heard `' + line.trim() + '`');
-      break;
+rl.on('line', async function (line) {
+  if (line === 'prime') {
+    preProcessSwData(apiClient);
+  } else {
+    const result = await getNamesRelatedToSearch(line.trim(), ['people'], apiClient);
+    console.log(result.message);
+    if (result.names?.length) {
+      console.log(result.names.join('\n'));
+    }
   }
   rl.prompt();
 }).on('close', function () {
