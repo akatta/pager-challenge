@@ -53,3 +53,4 @@ Once the cache is primed completely, the only http request that would need to be
 - When many queries are coming in, the cache will be fresher/more primed
 - We can run async jobs to prime the cache with all known entities on a semi-daily basis. The SwAPI has a limited amount of entities so we can prime all known objects from the star wars universe as they provide endpoints for this too. But in a world where there were a much larger amount of data served by SWAPI, we can also look at at the most-used queries and prime the information for those.
 - Have a string-prefix tree built on top of the cache so that searches could also be performed in memory first against the cache before firing off an http request
+- Handling 404 errors from API and handling retries
